@@ -1,0 +1,13 @@
+        <li id="file_<%=fileId%>" data-file_id="<%=fileId%>" class="fileItem">
+            <strong><%=$.fn.mgVideoChat.htmlspecialchars(file.desc.name)%></strong> <em><%=fileSize %></em>
+            <% if(file.pending){ %>
+            <a href="#" class="fileAccept" data-file_id="<%=fileId%>"><span class="glyphicon glyphicon-ok"></span> <% print($.fn.mgVideoChat._('accept')); %></a>
+            <% } %>
+            <a href="#" class="fileCancel" data-file_id="<%=fileId%>"><span class="glyphicon glyphicon-ban-circle"></span> <% print($.fn.mgVideoChat._('cancel')); %></a>
+            
+            <div class="progress progress-striped active">
+                <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                    <span class="sr-only progressText">0%</span>
+                </div>
+            </div>            
+        </li>

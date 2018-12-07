@@ -1,0 +1,74 @@
+
+        <li id="connection_<%=id%>" data-connection_id="<%=id%>" class="list-group-item media connectionItem">
+        <% if (roomOptions.group){ %>
+            <h5 class="media-heading"><%=$.fn.mgVideoChat.htmlspecialchars(userData.name)%></h5>
+            <% if(connection.rstream) { %>
+            <video class="connectionVideo" autoplay="autoplay" playsinline></video>
+            <% } %>
+        <% }else {%>
+            <div class="media-body">
+                <span class="connectionIconWrapper pull-left">
+                <% if (userData.image){ %>
+                    <img class="media-object connectionIcon" src="<%=userData.image%>" alt="<%=$.fn.mgVideoChat.htmlspecialchars(userData.name)%>">
+                <% }else{ %>
+                    <div class="media-object glyphicon glyphicon-user connectionIcon"></div>
+                <% } %>
+                </span>                
+                <h5 class="media-heading"><%=$.fn.mgVideoChat.htmlspecialchars(userData.name)%></h5>
+                <span id="callCell_<%=id%>">
+                    <span class="callStatus">
+                        <button data-id="<%=id%>" class="cmdBtn chatMsg btn btn-info" title="<% print($.fn.mgVideoChat._('Text chat')); %>">
+                            <span class="glyphicon glyphicon-envelope"></span>
+                        </button>
+                        <% if (hasWebrtc && roomOptions.file){ %>
+                        <button data-id="<%=id%>" class="cmdBtn fileSend btn btn-info" title="<% print($.fn.mgVideoChat._('Send a file')); %>">
+                            <span class="glyphicon glyphicon-file"></span>
+                        </button>
+                        <% }
+                           if(!videoId || videoId == id){ %>
+                            <% if(!roomOptions.roulette && status == 'idle'){ %>
+                            <% if(!roomOptions.disableVideo && hasWebrtc){ %>
+                            <% if(selfLoginParams.hasVideoDevice){ %>
+                            <button data-id="<%=id%>" class="cmdBtn idle call btn btn-success" title="<% print($.fn.mgVideoChat._('Call')); %>">
+                                <span class="glyphicon glyphicon-facetime-video"></span>
+                            </button>
+                            <% } %>
+                            <% if(roomOptions.desktopShare){ %>
+                            <button data-id="<%=id%>" class="cmdBtn idle callDesktop btn btn-success" title="<% print($.fn.mgVideoChat._('Share Desktop')); %>">
+                                <span class="glyphicon glyphicon-sound-stereo"></span>
+                            </button>
+                            <% } %>
+                            <% } %>
+                            <% if(!roomOptions.disableAudio && hasWebrtc && selfLoginParams.hasAudioDevice){ %>
+                            <button data-id="<%=id%>" class="cmdBtn idle callAudio btn btn-success" title="<% print($.fn.mgVideoChat._('Call Audio')); %>">
+                                <span class="glyphicon glyphicon-earphone"></span>
+                            </button>
+                            <% }
+                            }
+                            if(!roomOptions.roulette && status == 'call_invited'){ %>
+                            <button data-id="<%=id%>" class="cmdBtn called answer btn btn-success" title="<% print($.fn.mgVideoChat._('Answer')); %>">
+                                <span class="glyphicon glyphicon-earphone"></span>
+                            </button>
+                            <span class="badge status called label label-important">Ringing...</span>
+                            <% }
+                            if(!roomOptions.roulette && status == 'call_inviting'){ %>
+                            <button data-id="<%=id%>" class="cmdBtn calling drop btn btn-danger" title="<% print($.fn.mgVideoChat._('Cancel')); %>">
+                                <span class="glyphicon glyphicon-phone-alt"></span>
+                            </button>
+                            <span class="badge status calling label">Calling...</span>
+                            <% }
+                            if(!roomOptions.roulette && $.inArray(status,['call','sdp_answered','sdp_answering','sdp_offered','sdp_offering','call_accepted','call_accepting']) >= 0){%>
+                            <button data-id="<%=id%>" class="cmdBtn talk drop btn btn-danger" title="<% print($.fn.mgVideoChat._('Hang Up')); %>">
+                                <span class="glyphicon glyphicon-phone-alt"></span>
+                            </button>
+                            <span class="badge status talk label"><% print($.fn.mgVideoChat._('In call')); %></span>
+                            <% }
+                            if(unread){%>
+                            <span class="badge unread pull-right"><%=unread%></span>
+                            <% } %>
+                        <% } %>
+                    </span>
+                </span>
+            </div>
+            <% } %>
+        </li>

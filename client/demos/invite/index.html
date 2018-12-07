@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Magnoliyan Video Chat</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">        
+        <link rel="stylesheet" href="assets/chosen.css">
+        <link rel="stylesheet" href="assets/chosen-bootstrap.css">
+        <link rel="stylesheet" href="assets/sweetalert.css">
+        <link rel="stylesheet" href="../../mgVideoChat/mgVideoChat-1.15.0.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>MgVChat <small>Invite</small></h1>
+            <div class="alert alert-info" role="alert">
+                If no one else is in the room, please open the same page in other tab to do self-test.
+            </div>
+            <p><button type="button" id="inviteDialogBtn" class="btn btn-primary">Invite group</button></p>            
+        </div>
+        <div id="inviteDialog" class="modal fade" data-focus-on="input:first" style="display: none">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Invite</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="invitationText">Invitation text</label>
+                            <input id="invitationText" class="form-control" type="text" data-tabindex="1" placeholder="Plase join my chat at:">
+                        </div>
+                        <div class="form-group">
+                            <label for="friends">Invite friends</label>
+                            <select id="friends" class="form-control" data-tabindex="2" data-placeholder="Select friends to join" multiple="multiple">                               
+                            </select>
+                        </div>                        
+                    </div>
+                    <div class="modal-footer">
+                        <button id="inviteBtn" type="button" class="btn btn-primary">Invite</button>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <div id="mgVideoChat"></div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="assets/chosen.jquery.min.js"></script>
+        <script type="text/javascript" src="assets/sweetalert.min.js"></script>
+        <!-- Video Chat -->
+        <script src="../../mgVideoChat/mgVideoChat-1.15.0-min.js"></script>
+        <script src="../common/js/menu.js"></script>
+        <script>
+            var rtc, mgChat, allFriends = [];
+            
+            //render friends select options
+            function renderFriends(){
+                $('#friends').html('');
+                for (var connectionId in allFriends) {   
+                     $('#friends')
+                         .append($("<option></option>")
+                         .attr("value",connectionId)
+                         .text(allFriends[connectionId]['data']['userData']['name'])); 
+                };
+            }
+            
+            //get query string param
+            function getParameterByName(name) {
+                name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+                return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+            }
+            
+            //update query strung parameter
+            function updateQueryStringParameter(uri, key, value) {
+                var re = new RegExp("([?|&])" + key + "=.*?(&|$)", "i");
+                var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+                if (uri.match(re)) {
+                    return uri.replace(re, '$1' + key + "=" + value + '$2');
+                }
+                else {
+                    return uri + separator + key + "=" + value;
+                }
+            }
+            
+            function getInviteUrl(){
+                return updateQueryStringParameter(window.location.href, 'room', generateRoomId());
+            }
+            
+            //get random number
+            function getRandomInt (min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }            
+            
+            function generateRoomId(){
+                return 'group_' + getRandomInt(1000, 100000);
+            }
+            
+            $(document).ready(function(){
+                
+                //read chat room
+                var room = getParameterByName('room');
+                if(!room){
+                    room = '1';
+                } else {
+                    $('#inviteDialogBtn').remove();
+                }                
+                //chat object itself
+                mgChat = $('#mgVideoChat').mgVideoChat({
+                    wsURL: wsUrlDefault + '?room=' + room
+                });
+                
+                //store connections in global variable
+                $('#mgVideoChat').mgVideoChat('on','connections',function(connections){
+                    allFriends = connections;
+                    //console.log('connections event', allFriends);
+                });
+                
+                //invite dialog
+                $('#inviteDialogBtn').click(function(){
+                    renderFriends();
+                    $('#inviteDialog').modal('show');
+                });
+                
+                //chosen plugin for multiselect
+                $('#inviteDialog').on('shown.bs.modal', function () {
+                    //rebuild it on dialog popup
+                    $('#friends').chosen('destroy').chosen();
+                });                               
+                
+                $('#inviteBtn').click(function(){
+                    var url = getInviteUrl();
+                    var message = $("#invitationText").val() + ' ' + url;
+                    if($('#friends').find(":selected").length == 0){
+                        swal({title:"Error", text: "You have to select a friend!", type: "error" });
+                        return;
+                    }
+                    $('#friends').find(":selected").each(function(){
+                        mgChat.getRtc().chatMessage($(this).attr('value'), message);
+                    });
+                    swal({
+                        title:"Invited",
+                        text: 'Your friends are invited to join you at <a href="' + url + '">' + url + '</a>',
+                        type: "success",
+                        html: true,
+                        showCancelButton: false,
+                        confirmButtonText: "Join them now",
+                        closeOnConfirm: true
+                    }, function(){
+                        window.open(url,'_blank');
+                    });
+                    $('#inviteDialog').modal('hide');
+                });
+            });
+        </script>      
+    </body>
+</html>

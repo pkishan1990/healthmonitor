@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Magnoliyan Video Chat</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">        
+        <link rel="stylesheet" href="../../mgVideoChat/mgVideoChat-1.15.0.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>MgVChat <small>Desktop Capture</small></h1>
+            <div class="alert alert-info" role="alert">
+                If no one else is in the room, please open the same page in other tab to do self-test.
+            </div>
+        </div>
+        <div id="mgVideoChat"></div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+        <!-- Video Chat -->
+        <script src="../../mgVideoChat/mgVideoChat-1.15.0-min.js"></script>
+        <script src="../common/js/menu.js"></script>
+        <script>
+            $(document).ready(function(){
+                $('#mgVideoChat').mgVideoChat({
+                    wsURL: wsUrlDefault + '?room=8',
+                    debug: true
+                });
+            });
+        </script>      
+    </body>
+</html>

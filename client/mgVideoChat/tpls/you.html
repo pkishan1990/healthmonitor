@@ -1,0 +1,6 @@
+<% if (userData.image){ %>
+    <img class="media-object pull-left" src="<%=userData.image%>" alt="<%=$.fn.mgVideoChat.htmlspecialchars(userData.name)%>">
+<% }else{ %>
+    <div class="media-object pull-left glyphicon glyphicon-user" style="font-size: 32px;"></div>
+<% } %>
+<h5><%=$.fn.mgVideoChat.htmlspecialchars(userData.name)%></h5>

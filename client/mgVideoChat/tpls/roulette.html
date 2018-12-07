@@ -1,0 +1,14 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><% print($.fn.mgVideoChat._('Roulette partner')); %></h3>
+    </div>
+    <div class="panel-body">
+        <strong id="users-count"><%=usersCount%></strong> <% print($.fn.mgVideoChat._('users online')); %>
+<% if (rows){ %>
+    <ul id="connections" class="media-list"></ul>
+<% }%>
+        <button id="rouletteNext" class="btn btn-primary btn-lg" title="<% print($.fn.mgVideoChat._('Next')); %>">
+            <span class="glyphicon glyphicon-forward"></span> <% print($.fn.mgVideoChat._('Next')); %>
+        </button>
+    </div>
+</div>
