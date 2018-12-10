@@ -70,12 +70,45 @@ if ($_REQUEST['new'] && $_REQUEST['practitioner']) {
                     alert("Case Reffered to Specialist");
                 }
             });
-            alert(id);
         }
     }
 </script>
 
+<script>
+    function practitioner(id) {
+        /**/
+        if (confirm("Are you sure reffering case to General Practitioner?") == true) {
+            jQuery.ajax({
+                url: 'newcases.php',
+                method: 'POST',
+                data: {
+                    practitioner: id
+                },
+                success: function (data) {
+                    alert("Case Reffered to General Practitioner");
+                }
+            });
+        }
+    }
+</script>
 
+<script>
+    function emergency(id) {
+        /**/
+        if (confirm("Are you sure reffering case to emergency?") == true) {
+            jQuery.ajax({
+                url: 'newcases.php',
+                method: 'POST',
+                data: {
+                    emergency: id
+                },
+                success: function (data) {
+                    alert("Case Reffered to Emergency Team");
+                }
+            });
+        }
+    }
+</script>
 <table class="table table-striped">
     <tbody><tr>
             <th style="width: 10px">Case ID#</th>
@@ -141,7 +174,33 @@ if ($_REQUEST['new'] && $_REQUEST['practitioner']) {
                     <td><a href='../userdetails.php?id=<?php echo $id; ?>' target="_new">Patient Details</a></td>
 
                     <td>
-                        <a href='javascript:;' onclick='specialist(<?php echo $row['id']; ?>);'><?php echo 'Specialist'; ?></a> 
+                        <?php
+                        if ($_REQUEST['emergency']) {
+                            ?>
+                            <a href='javascript:;' onclick='practitioner(<?php echo $row['id']; ?>);'><?php echo 'General Practitioner'; ?></a> 
+                            <a href='javascript:;' onclick='specialist(<?php echo $row['id']; ?>);'><?php echo 'Specialist'; ?></a> 
+                            <?php
+                        }
+                        ?>
+
+                        <?php
+                        if ($_REQUEST['practitioner']) {
+                            ?>
+                            <a href='javascript:;' onclick='emergency(<?php echo $row['id']; ?>);'><?php echo 'Emergency Team'; ?></a> 
+                            <a href='javascript:;' onclick='specialist(<?php echo $row['id']; ?>);'><?php echo 'Specialist'; ?></a> 
+                            <?php
+                        }
+                        ?>
+
+                        <?php
+                        if ($_REQUEST['specialist']) {
+                            ?>
+                            <a href='javascript:;' onclick='emergency(<?php echo $row['id']; ?>);'><?php echo 'Emergency Team'; ?></a> 
+                            <a href='javascript:;' onclick='practitioner(<?php echo $row['id']; ?>);'><?php echo 'General Practitioner'; ?></a> 
+                            <?php
+                        }
+                        ?>
+
                     </td>
                     <td>
                         <?php if ($_REQUEST['new']) {
@@ -174,6 +233,21 @@ if ($_REQUEST['uncasesolved']) {
     $link->query($sql);
 }
 
+if ($_REQUEST['specialist']) {
+    $id = $_REQUEST['specialist'];
+    $sql = "update cases set notifier=3 where id=$id and casetype='new'";
+    $link->query($sql);
+}
 
+if ($_REQUEST['practitioner']) {
+    $id = $_REQUEST['practitioner'];
+    $sql = "update cases set notifier=2 where id=$id and casetype='new'";
+    $link->query($sql);
+}
 
+if ($_REQUEST['emergency']) {
+    $id = $_REQUEST['emergency'];
+    $sql = "update cases set notifier=4 where id=$id and casetype='new'";
+    $link->query($sql);
+}
 ?>

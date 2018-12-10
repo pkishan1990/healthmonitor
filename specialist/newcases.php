@@ -43,4 +43,21 @@ if ($_REQUEST['uncasesolved']) {
     $link->query($sql);
 }
 
+if ($_REQUEST['specialist']) {
+    $id = $_REQUEST['specialist'];
+    $sql = "update cases set notifier=3 where id=$id and casetype='new'";
+    $link->query($sql);
+}
+
+if ($_REQUEST['practitioner']) {
+    $id = $_REQUEST['practitioner'];
+    $sql = "update cases set notifier=2 where id=$id and casetype='new'";
+    $link->query($sql);
+}
+
+if ($_REQUEST['emergency']) {
+    $id = $_REQUEST['emergency'];
+    $sql = "update cases set notifier=4 where id=$id and casetype='new'";
+    $link->query($sql);
+}
 ?>
